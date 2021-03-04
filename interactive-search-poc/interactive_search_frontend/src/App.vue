@@ -53,13 +53,8 @@
 
     <v-main>
       <SearchBar ref="searchOperations" @cleared="onClearSearch" @clicked="onClickSearch"></SearchBar>
-      <div v-if="showResults && !this.error_flag">
-        <ProductResults
-            :query_string="query_string"
-            :query_results="this.query_results"
-            :brands="brands"
-            :error_flag="error_flag"
-            @error_received_2="error_flag = true">
+      <div v-if="this.state.showResults && !this.state.backend_error_flag">
+        <ProductResults>
         </ProductResults>
       </div>
     </v-main>
@@ -69,23 +64,17 @@
 <script>
 import SearchBar from './components/SearchBar';
 import ProductResults from "@/components/ProductResults";
+import {mapState} from "vuex";
 
 export default {
   name: 'App',
-
+  computed: {
+    ...mapState([]),
+  },
   components: {
     ProductResults,
     SearchBar,
   },
-
-  data: () => ({
-    showResults: false,
-    query_string: '',
-    query_results: [],
-    error_flag: false,
-    brands: []
-  }),
-
   methods: {
     onClickSearch(value) {
       this.query_string = value;
@@ -102,6 +91,7 @@ export default {
                 console.log(response.data);
                 this.query_results = response.data.products;
                 this.brands = response.data.brands;
+                this.median_price = response.data.median_price;
                 this.setErrorFlag(false);
                 this.showResults = true;
               } else {

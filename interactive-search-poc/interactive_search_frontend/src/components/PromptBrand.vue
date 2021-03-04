@@ -12,7 +12,7 @@
           Which brand would you like to browse further?
         </v-col>
       </v-row>
-      <v-row align="center" class="justify-space-between">
+      <v-row align="center" class="justify-space-around">
         <v-col v-for="brand in this.brands"
                :key="brand"
                :cols="2">

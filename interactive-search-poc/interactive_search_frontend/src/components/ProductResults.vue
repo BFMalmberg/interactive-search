@@ -1,12 +1,18 @@
 <template>
   <v-container v-if="!error_flag">
-    <v-row class="text-center" v-show="true">
+    <v-row class="text-center">
       <v-col cols="12">
-        <PromptBrand
+        <PromptPrice v-show="prompt_price"
             :query_string="query_string"
-            :brands="brands"
-            :query_results="query_results"
+            :median_price="median_price"
             @error_received="pass_on_error"
+        ></PromptPrice>
+
+        <PromptBrand v-show="prompt_brand"
+                     :query_string="query_string"
+                     :brands="brands"
+                     :query_results="query_results"
+                     @error_received="pass_on_error"
         ></PromptBrand>
       </v-col>
     </v-row>
@@ -35,19 +41,18 @@
 <script>
 import Product from "@/components/Product";
 import PromptBrand from "@/components/PromptBrand";
+import PromptPrice from "@/components/PromptPrice";
 
 export default {
   name: "ProductResults",
-  props: ['query_string', 'query_results', 'brands', 'error_flag'],
-  components: {PromptBrand, Product},
+  props: ['query_string', 'query_results', 'median_price', 'brands'],
+  components: {PromptPrice, PromptBrand, Product},
   data: () => ({
-    prompt_price: false,
+    prompt_price: true,
     prompt_brand: false
   }),
   methods: {
-    pass_on_error() {
-      this.$emit("error_received_2", true)
-    }
+
   }
 
 }

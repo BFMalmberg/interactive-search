@@ -46,7 +46,6 @@ export default {
   name: 'SearchBar',
   data: () => ({
     valid: false,
-    showMap: false,
     user_query: '',
     queryRules: [
       v => !!v || 'Query is required',
