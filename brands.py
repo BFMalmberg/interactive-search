@@ -2,6 +2,10 @@
 Code relevant for the "brands" prompt.
 Input: N products from a previous query.
 Output: top k brands in these products.
+
+TODO's:
+* make sure more articles have "brand" field by extracting from title and/or description
+* combine different descriptions of the same brand into a single representation
 """
 from typing import List
 import logging
