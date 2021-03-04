@@ -22,13 +22,13 @@ def get_results(
                     {"range": {"price": {"gte": min_price, "lt": max_price}}},
                     {"exists": {"field": required_field}},
                 ],
-                "filter": {"term": {"categories.keyword": filter_category}},
+                "filter": [{"term": {"categories.keyword": filter_category}}],
             }
         }
     }
     # Add brand filter if it exist
     if filter_brand:
-        body["query"]["bool"]["filter"]
+        body["query"]["bool"]["filter"].append({"term": {"brand.keyword": filter_brand}})
 
     res = es_connection.search(index="products", body=body, size=100)
     print("Got %d Hits:" % res["hits"]["total"]["value"])

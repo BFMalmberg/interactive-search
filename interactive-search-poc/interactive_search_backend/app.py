@@ -49,12 +49,18 @@ def get_query_results_for_brand(body):
     :param body: dict containing "user_query" and "brand_name" fields.
     :return: new results based on query with user_query and brand_name filter.
     """
-    # TODO: fill in - Diede.
+    user_query = body.get("user_query")
+    brand = body.get("brand_name")
 
+    results = get_results(es_connection, user_query, filter_brand=brand)
 
-    # TODO: also give temperature in result - Diede.
-    # For now return empty list.
-    return jsonify(status="OK", products=[])
+    # TODO: also give temperature in result - Siem.
+    if results:
+        return jsonify(status="OK", products=results)  #, temperature=None)
+    else:
+        return jsonify(status="FAILED",
+                       error=404,
+                       message="No results found.")
 
 
 @app.route('/query_sweater', methods=["POST"])
