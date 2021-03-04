@@ -10,7 +10,11 @@ def get_results(
     body = {
         "query": {
             "bool": {
-                "must": {"multi_match": {"query": query, "fields": fields}},
+                "must": [
+                    {"multi_match": {"query": query, "fields": fields}},
+                    {"range": {"price": {"gte": 0, "lt": 500}}},
+                    {"exists": {"field": "brand"}},
+                ],
                 "filter": {"term": {"categories.keyword": filter_category}},
             }
         }
@@ -18,7 +22,9 @@ def get_results(
     res = es.search(index="products", body=body)
     print("Got %d Hits:" % res["hits"]["total"]["value"])
     for hit in res["hits"]["hits"]:
-        print("%(title)s: %(description)s" % hit["_source"])
+        print("%(title)s, %(price)s, %(brand)s: %(description)s" % hit["_source"])
 
+
+# def get_price_info(results):
 
 get_results("red t-shirt")
