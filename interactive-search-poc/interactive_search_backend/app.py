@@ -46,15 +46,27 @@ def get_chosen_price_results():
 @app.route('/query_brand', methods=["POST"])
 def get_query_results_for_brand():
     """
-    :param body: dict containing "user_query" and "brand_name" fields.
     :return: new results based on query with user_query and brand_name filter.
     """
-    # TODO: fill in - Diede.
-    user_query = request.form.get('user_query')
-    brand_name = request.form.get('brand_name')
-    print(user_query, brand_name)
+    user_query = request.form.get("user_query")
+    brand = request.form.get("brand_name")
 
-    # For now return empty list.
+    results = get_results(es_connection, user_query, filter_brand=brand)
+
+    # TODO: also give temperature in result - Siem.
+    if results:
+        return jsonify(status="OK", products=results)  #, temperature=None)
+    else:
+        return jsonify(status="FAILED",
+                       error=404,
+                       message="No results found.")
+
+
+@app.route('/query_sweater', methods=["POST"])
+def get_query_results_for_sweater():
+    # TODO: fill in - Siem.
+    # If user indeed wants to search for sweaters, give sweater results.
+
     return jsonify(status="OK", products=[])
 
 
