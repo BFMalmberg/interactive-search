@@ -98,6 +98,10 @@ def create_document(
 def update_document(
     es_connection, document_data, index, document_id=None, refresh="wait_for"
 ):
+    """
+    Note that document_data should have the following format:
+    {"doc":{"field": "value"}}
+    """
     try:
 
         result = es_connection.update(
