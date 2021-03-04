@@ -22,4 +22,4 @@ Run the web application with the following command:
 docker-compose up --build
 ```
 
-Navigate to localhost:8080
+Navigate to localhost:8050
