@@ -13,8 +13,10 @@
         </v-col>
       </v-row>
       <v-row align="center">
-        <v-col cols="12">
-          <v-btn>Yes</v-btn>
+        <v-col v-for="option in buttons"
+               :key="option.name"
+               :cols="3">
+          <v-btn>{{ option }}</v-btn>
         </v-col>
       </v-row>
     </v-alert>
@@ -23,7 +25,8 @@
 
 <script>
 export default {
-  name: "Prompt"
+  name: "Prompt",
+  props: ['buttons']
 }
 </script>
 

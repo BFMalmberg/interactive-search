@@ -2,7 +2,7 @@
   <v-container v-if="!error_flag">
     <v-row class="text-center" v-show="true">
       <v-col cols="12">
-        <Prompt></Prompt>
+        <Prompt :buttons="brands"></Prompt>
       </v-col>
     </v-row>
     <v-row class="text-center">
@@ -33,7 +33,7 @@ import Prompt from "@/components/Prompt";
 
 export default {
   name: "MapResults",
-  props: ['query_results', 'error_flag'],
+  props: ['query_results', 'brands', 'error_flag'],
   components: {Prompt, Product},
   data: () => ({
     prompt_price: false,
