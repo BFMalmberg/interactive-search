@@ -23,6 +23,7 @@ def get_initial_query_results():
                        error=404,
                        message="No results found.")
 
+
 @app.route('/price_clicked', methods=['POST'])
 def get_chosen_price_results():
     user_query = request.form.get('user_query')
@@ -50,7 +51,17 @@ def get_query_results_for_brand(body):
     """
     # TODO: fill in - Diede.
 
+
+    # TODO: also give temperature in result - Diede.
     # For now return empty list.
+    return jsonify(status="OK", products=[])
+
+
+@app.route('/query_sweater', methods=["POST"])
+def get_query_results_for_sweater():
+    # TODO: fill in - Siem.
+    # If user indeed wants to search for sweaters, give sweater results.
+
     return jsonify(status="OK", products=[])
 
 
