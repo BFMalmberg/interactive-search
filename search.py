@@ -4,7 +4,11 @@ es = get_connection_from_env()
 
 
 def get_results(
-    query, query_fields=("description", "title"), filter_category="T-Shirts"
+    query,
+    query_fields=("description", "title"),
+    filter_category="T-Shirts",
+    min_price=0,
+    max_price=500,
 ):
     fields = list(query_fields)
     body = {
@@ -12,7 +16,7 @@ def get_results(
             "bool": {
                 "must": [
                     {"multi_match": {"query": query, "fields": fields}},
-                    {"range": {"price": {"gte": 0, "lt": 500}}},
+                    {"range": {"price": {"gte": min_price, "lt": max_price}}},
                     {"exists": {"field": "brand"}},
                 ],
                 "filter": {"term": {"categories.keyword": filter_category}},
