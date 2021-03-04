@@ -44,13 +44,12 @@ def get_chosen_price_results():
 
 
 @app.route('/query_brand', methods=["POST"])
-def get_query_results_for_brand(body):
+def get_query_results_for_brand():
     """
-    :param body: dict containing "user_query" and "brand_name" fields.
     :return: new results based on query with user_query and brand_name filter.
     """
-    user_query = body.get("user_query")
-    brand = body.get("brand_name")
+    user_query = request.form.get("user_query")
+    brand = request.form.get("brand_name")
 
     results = get_results(es_connection, user_query, filter_brand=brand)
 
