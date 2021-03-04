@@ -23,8 +23,3 @@ docker-compose up --build
 ```
 
 Navigate to localhost:8080
-
-## Troubleshooting
-
-When not working with docker, adjust the MongoDB URI in `app.py` in 
-the backend. See comments in the file.
