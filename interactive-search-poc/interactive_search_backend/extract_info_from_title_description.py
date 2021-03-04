@@ -7,42 +7,63 @@ For instance:
 TODO: note work in progress
 """
 
-from elastic_connector import execute_query, get_connection_from_env
+from elastic_connector import execute_query, get_connection_from_env, update_document
+from elasticsearch.helpers import bulk
+from pprint import pprint
 
-INDEX = "products"
-
-
+INDEX = "products2"
 
 query = {
     "query": {
         "exists": {
-            "field": "title"
+            "field": "old_brand"
         }
     }
 }
 
 
-size_mapping = {
-    "XXXS": {"XXXS", "3X-small"},
-    "XXS": {"XXS", "2X-small"},
-    "XS": {"XS", "extra small", "X-small"},
-    "S": {"S", "small"},
-    "M": {"M", "medium"},
-    "L": {"L", "large"},
-    "XL": {"XL", "extra large", "X-large"},
-    "XXL": {"XXL", "2X-large"},
-    "XXXL": {"XXXL", "3x-large"}
-}
+def ingest_to_index():
+    """
+    Ingests all products into the index. Does some preprocessing before hand.
+    :return:
+    """
+    es = get_connection_from_env()
+
+    with open("../meta_Clothing_Shoes_and_Jewelry.json") as myfile:
+        while next(myfile):
+            head = [eval(next(myfile)) for x in range(50000)]
+            parsed = [dict(pr, **{"_index": INDEX}) for pr in head if pr.get("description")]
+            print(bulk(es, parsed))
 
 
-es = get_connection_from_env()
+# def store_old_brand_value():
+#     """
+#     Creates a new field for all articles named "old_brand" containing the old value of the "brand" field.
+#     """
+#     es = get_connection_from_env()
+#     n_results = 1
+#
+#     while n_results > 0:
+#         results = execute_query(es_connection=es,
+#                                 query=query,
+#                                 index=INDEX)
+#
+#         n_results = len(results["hits"]["hits"])
+#         for result in results["hits"]["hits"]:
+#             doc_id = result["_id"]
+#             doc_data = result["_source"]
+#             if "brand" in doc_data:
+#                 old_brand = doc_data["brand"]
+#             else:
+#                 old_brand = None
+#
+#             doc_data["old_brand"] = old_brand
+#             update_document(es_connection=es,
+#                             document_id=doc_id,
+#                             document_data={"doc": {"old_brand": old_brand}},
+#                             index=INDEX)
 
-for i in range(5):
-    print("---------")
-    results = execute_query(es_connection=es,
-                            query=query,
-                            index=INDEX)
 
-    print(len(results))
-    for result in results["hits"]["hits"]:
-        print(result["_source"]["title"])
+if __name__ == '__main__':
+
+    print("Done")
