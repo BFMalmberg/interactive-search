@@ -18,7 +18,7 @@ def get_initial_query_results():
     brand_results = get_top_k_brands(results, top_k=5)
     median_price = get_price_info(results)
     if results:
-        return jsonify(status="OK", products=results, brands=brand_results)
+        return jsonify(status="OK", products=results, brands=brand_results, median_price=median_price)
     else:
         return jsonify(status="FAILED",
                        error=404,
@@ -59,7 +59,7 @@ def get_query_results_for_brand():
     temperature = get_weather_for_latlon(lat,lon)
 
     if results:
-        return jsonify(status="OK", products=results) , temperature=None)
+        return jsonify(status="OK", products=results, temperature=temperature)
     else:
         return jsonify(status="FAILED",
                        error=404,
@@ -71,7 +71,7 @@ def get_query_results_for_sweater():
     # TODO: fill in - Siem.
     # If user indeed wants to search for sweaters, give sweater results.
 
-    results = get_results(es_connection, user_query="jacket", filter_category="Jackets & Coats")
+    results = get_results(es_connection, query="jacket", filter_category="Jackets & Coats")
 
     if results:
         return jsonify(status="OK", products=results)
