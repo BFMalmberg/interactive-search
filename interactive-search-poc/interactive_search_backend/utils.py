@@ -1,8 +1,13 @@
-from typing import List
-import json
 
 
-def get_results(es_connection, query, query_fields=("description", "title"), filter_category="T-Shirts"):
+def get_results(
+        es_connection,
+        query,
+        query_fields=("description", "title"),
+        filter_category="Clothing",
+        min_price=0,
+        max_price=500,
+):
     """ Function to get query results from ElasticSearch.
     """
     response = []
@@ -10,16 +15,19 @@ def get_results(es_connection, query, query_fields=("description", "title"), fil
     body = {
         "query": {
             "bool": {
-                "must": {"multi_match": {"query": query, "fields": fields}},
+                "must": [
+                    {"multi_match": {"query": query, "fields": fields}},
+                    {"range": {"price": {"gte": min_price, "lt": max_price}}},
+                    {"exists": {"field": "brand"}},
+                ],
                 "filter": {"term": {"categories.keyword": filter_category}},
             }
         }
     }
-    res = es_connection.search(index="products", body=body)
-
+    res = es_connection.search(index="products", body=body, size=100)
     print("Got %d Hits:" % res["hits"]["total"]["value"])
     for hit in res["hits"]["hits"]:
-        print("%(title)s: %(description)s" % hit["_source"])
+        print("%(title)s, %(price)s, %(brand)s: %(description)s" % hit["_source"])
 
     if res["hits"]["total"]["value"] != 0:
         for result in res["hits"]["hits"]:

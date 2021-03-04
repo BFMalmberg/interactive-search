@@ -54,7 +54,7 @@
     <v-main>
       <SearchBar ref="searchOperations" @cleared="onClearSearch" @clicked="onClickSearch"></SearchBar>
       <div v-if="showResults && !this.error_flag">
-        <ProductResults :query_results="this.query_results"></ProductResults>
+        <ProductResults :query_results="this.query_results" :brands="brands" :error_flag="error_flag"></ProductResults>
       </div>
     </v-main>
   </v-app>
@@ -77,6 +77,7 @@ export default {
     query_string: '',
     query_results: [],
     error_flag: false,
+    brands: []
   }),
 
   methods: {
@@ -94,6 +95,7 @@ export default {
               if (response.data.status === 'OK') {
                 console.log(response.data);
                 this.query_results = response.data.products;
+                this.brands = response.data.brands;
                 this.setErrorFlag(false);
                 this.showResults = true;
               } else {

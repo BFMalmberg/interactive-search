@@ -4,9 +4,8 @@ import logging
 import certifi
 from dotenv import load_dotenv
 from pathlib import Path  # Python 3.6+ only
-env_path = Path('.') / '.env'
-print(env_path)
-load_dotenv(dotenv_path=env_path, verbose=True)
+
+load_dotenv()
 
 '''
 This file contains a set of helper functions to interact with elasticsearch

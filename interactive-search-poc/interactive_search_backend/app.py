@@ -3,6 +3,7 @@ from flask_cors import CORS
 
 from elastic_connector import get_connection_from_env
 from utils import get_results
+from brands import get_top_k_brands
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -13,9 +14,10 @@ es_connection = get_connection_from_env()
 def get_initial_query_results():
     user_query = request.form.get('user_query')
     results = get_results(es_connection, user_query)
+    brand_results = get_top_k_brands(results, top_k=5)
 
     if results:
-        return jsonify(status="OK", products=results)
+        return jsonify(status="OK", products=results, brands=brand_results)
     else:
         return jsonify(status="FAILED",
                        error=404,
