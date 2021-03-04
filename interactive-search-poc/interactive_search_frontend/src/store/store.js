@@ -5,65 +5,96 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
-        backend_error_flag: false,
         query_string: '',
         query_results: [],
         brands: [],
         median_price: 0,
-        showResults: false,
+        show_results_flag: false,
+        backend_error_flag: false,
+        results_loading_flag: false,
     },
     actions: {
-        async initQueryResults ({commit}, {random_seed}) {
-            commit('UPDATE_QUESTIONS_LOADING', true);
+        async initResults ({commit}, {form_data}) {
+            commit('UPDATE_RESULTS_LOADING_FLAG', true);
+            // make an API query
             await Vue.http
-                .get('questions/'+random_seed)
-                .then(response => {
-                    if (response.status === 200) {
-                        commit('SET_QUESTIONS', response.data.questions);
+                .post('http://localhost:5050/query_results', form_data, {emulateJSON: true})
+                .then((response) => {
+                    if (response.data.status === 'OK') {
+                        console.log(response.data);
+                        commit('SET_QUERY_RESULTS', response.data.products);
+                        commit('SET_BRANDS', response.data.brands);
+                        commit('SET_MEDIAN_PRICE', response.data.median_price);
                         commit('UPDATE_BACKEND_ERROR_FLAG', false);
+                        // commit()
+                        this.showResults = true;
+                    } else {
+                        commit('UPDATE_BACKEND_ERROR_FLAG', true);
+                        this.showResults = false;
                     }
                 })
                 .catch(error => {
                     console.error(error);
                     commit('UPDATE_BACKEND_ERROR_FLAG', true);
                 });
-            commit('UPDATE_QUESTIONS_LOADING', false);
+
+            commit('UPDATE_RESULTS_LOADING_FLAG', false);
         },
-        async initMedianPrice ({commit}, {median_price}) {
-            commit('SET_MEDIAN_PRICE', median_price());
+        async filterResults ({commit}, {form_data}) {
+            commit('UPDATE_RESULTS_LOADING_FLAG', true);
+            // make an API query
+            await Vue.http
+                .post('http://localhost:5050/price_clicked', form_data, {emulateJSON: true})
+                .then((response) => {
+                    if (response.data.status === 'OK') {
+                        console.log(response.data);
+                        this.query_results = response.data.products;
+                        this.$emit('error_received', false)
+                        this.showResults = true;
+                        this.$emit('update_results', this.query_results);
+                    } else {
+                        this.$emit('error_received', true)
+                        this.showResults = false;
+                    }
+                })
+                .catch(function (error) {
+                    console.log(error);
+                    this.$emit('error_received', true)
+                });
+        },
+        setQueryString ({commit}, {query_string}) {
+            commit('SET_QUERY_STRING', query_string);
         },
         setBackendErrorFlag ({commit}, {flag}) {
             commit('UPDATE_BACKEND_ERROR_FLAG', flag);
         },
+        setShowResultFlag ({commit}, {flag}) {
+            commit('UPDATE_SHOW_RESULTS_FLAG', flag);
+        },
 
     },
     mutations: {
-        SET_MEDIAN_PRICE (state, median_price) {
-            state.median_price = median_price;
+        SET_QUERY_STRING (state, query_string) {
+            state.query_string = query_string;
         },
         SET_QUERY_RESULTS (state, query_results) {
             state.query_results = query_results;
         },
+        SET_BRANDS (state, brands) {
+            state.brands = brands;
+        },
+        SET_MEDIAN_PRICE (state, median_price) {
+            state.median_price = median_price;
+        },
+        UPDATE_SHOW_RESULTS_FLAG (state, flag) {
+            state.show_results_flag = flag;
+        },
         UPDATE_BACKEND_ERROR_FLAG (state, flag) {
             state.backend_error_flag = flag;
         },
-        UPDATE_QUESTIONS_LOADING (state, status) {
-            state.questions_loading = status;
+        UPDATE_RESULTS_LOADING_FLAG (state, flag) {
+            state.results_loading_flag = flag;
         },
-        UPDATE_SECTORS_LOADING (state, status) {
-            state.sectors_loading = status;
-        },
-        UPDATE_NA_LIMIT_EXCEEDED_FLAG (state, flag) {
-            state.na_limit_exceeded_flag = flag;
-        },
-        UPDATE_CATCH_QUESTIONS_FAILED_FLAG (state, flag) {
-            state.catch_questions_failed_flag = flag;
-        },
-        UPDATE_EMPTY_DASHBOARD_FLAG (state, flag) {
-            state.empty_dashboard_flag = flag;
-        },
-        UPDATE_SHOW_NEXT_BUTTON_FLAG (state, flag) {
-            state.show_next_button = flag;
-        },
+
     }
 });

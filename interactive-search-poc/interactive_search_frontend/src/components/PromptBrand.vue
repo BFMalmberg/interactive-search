@@ -9,7 +9,7 @@
     >
       <v-row align="center">
         <v-col class="grow">
-          Which brand would you like to browse further?
+          In this price range, the following brands stand out. Which brand has your preference?
         </v-col>
       </v-row>
       <v-row align="center" class="justify-space-around">
@@ -27,9 +27,13 @@
 </template>
 
 <script>
+import {mapState} from "vuex";
+
 export default {
   name: "Prompt",
-  props: ['query_string', 'brands', 'query_results'],
+  computed: {
+    ...mapState([]),
+  },
   data() {
     return {
     }
@@ -37,7 +41,7 @@ export default {
   methods: {
     brand_selected(value) {
       const formData = {
-        'user_query': this.query_string,
+        'user_query': this.$store.state.query_string,
         'brand_name': value
       }
       if (this.query_string !== '') {

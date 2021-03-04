@@ -42,6 +42,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'SearchBar',
   data: () => ({
@@ -52,7 +53,7 @@ export default {
     ],
   }),
   methods: {
-    onSubmit: function () {
+    async onSubmit() {
       this.showMap = true;
       this.$emit('clicked', this.user_query);
     },

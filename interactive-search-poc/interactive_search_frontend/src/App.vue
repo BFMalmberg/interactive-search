@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-overlay :opacity="0.5" :value="this.error_flag">
+    <v-overlay :opacity="0.5" :value="this.backend_error_flag">
       <v-card class="mx-auto" dark width="500">
         <v-card-title class="headline">
           Nothing useful found!
@@ -53,7 +53,7 @@
 
     <v-main>
       <SearchBar ref="searchOperations" @cleared="onClearSearch" @clicked="onClickSearch"></SearchBar>
-      <div v-if="this.state.showResults && !this.state.backend_error_flag">
+      <div v-if="this.show_results_flag && !this.backend_error_flag">
         <ProductResults>
         </ProductResults>
       </div>
@@ -69,53 +69,40 @@ import {mapState} from "vuex";
 export default {
   name: 'App',
   computed: {
-    ...mapState([]),
+    ...mapState([
+      'query_string',
+      'query_results',
+      'brands',
+      'median_price',
+      'show_results_flag',
+      'backend_error_flag',
+      'results_loading_flag',
+    ]),
   },
   components: {
     ProductResults,
     SearchBar,
   },
   methods: {
-    onClickSearch(value) {
-      this.query_string = value;
-      const formData = {
-        'user_query': this.query_string
+    async onClickSearch(value) {
+      console.log(value)
+      const form_data = {
+        'user_query': value
       }
-
+      await this.$store.dispatch('setQueryString', {query_string: value});
       if (this.query_string !== '') {
-        // make an API query
-        this.$http
-            .post('http://localhost:5050/query_results', formData, {emulateJSON: true})
-            .then((response) => {
-              if (response.data.status === 'OK') {
-                console.log(response.data);
-                this.query_results = response.data.products;
-                this.brands = response.data.brands;
-                this.median_price = response.data.median_price;
-                this.setErrorFlag(false);
-                this.showResults = true;
-              } else {
-                this.setErrorFlag(true);
-                this.showResults = false;
-              }
-            })
-            .catch(function (error) {
-              console.log(error);
-              this.setErrorFlag(true);
-            });
+        await this.$store.dispatch('initResults', {form_data: form_data});
+        await this.$store.dispatch('setShowResultFlag', {flag: true});
       } else {
         this.$refs.searchOperations.$refs.searchForm.validate();
-        this.showResults = false;
+        await this.$store.dispatch('setShowResultFlag', {flag: false});
       }
     },
-    onClearSearch() {
-      this.showResults = false;
+    async onClearSearch() {
       this.$refs.searchOperations.$refs.searchForm.resetValidation();
-      this.setErrorFlag(false);
-      this.query_string = '';
-    },
-    setErrorFlag(val) {
-      this.error_flag = val;
+      await this.$store.dispatch('setShowResultFlag', {flag: false});
+      await this.$store.dispatch('setBackendErrorFlag', {flag: false})
+      await this.$store.dispatch('setQueryString', {query_string: ''});
     },
     reloadPage() {
       window.location.reload();

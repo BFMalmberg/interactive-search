@@ -1,18 +1,16 @@
 <template>
-  <v-container v-if="!error_flag">
+  <v-container v-if="!this.backend_error_flag">
     <v-row class="text-center">
       <v-col cols="12">
         <PromptPrice v-show="prompt_price"
-            :query_string="query_string"
-            :median_price="median_price"
-            @error_received="pass_on_error"
+                     :median_price="median_price"
+                     :query_string="query_string"
         ></PromptPrice>
 
         <PromptBrand v-show="prompt_brand"
-                     :query_string="query_string"
                      :brands="brands"
                      :query_results="query_results"
-                     @error_received="pass_on_error"
+                     :query_string="query_string"
         ></PromptBrand>
       </v-col>
     </v-row>
@@ -24,7 +22,7 @@
           <v-container fluid>
             <v-row dense>
               <v-col
-                  v-for="result in query_results"
+                  v-for="result in this.query_results"
                   :key="result._id"
                   :cols="3"
               >
@@ -42,18 +40,27 @@
 import Product from "@/components/Product";
 import PromptBrand from "@/components/PromptBrand";
 import PromptPrice from "@/components/PromptPrice";
+import {mapState} from "vuex";
 
 export default {
   name: "ProductResults",
-  props: ['query_string', 'query_results', 'median_price', 'brands'],
+  computed: {
+    ...mapState([
+      'query_string',
+      'query_results',
+      'brands',
+      'median_price',
+      'show_results_flag',
+      'backend_error_flag',
+      'results_loading_flag',
+    ]),
+  },
   components: {PromptPrice, PromptBrand, Product},
   data: () => ({
     prompt_price: true,
     prompt_brand: false
   }),
-  methods: {
-
-  }
+  methods: {}
 
 }
 </script>
