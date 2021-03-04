@@ -10,6 +10,7 @@ def get_results(
     filter_category="T-Shirts",
     min_price=0,
     max_price=500,
+    required_field="brand"
 ):
     fields = list(query_fields)
     body = {
@@ -18,7 +19,7 @@ def get_results(
                 "must": [
                     {"multi_match": {"query": query, "fields": fields}},
                     {"range": {"price": {"gte": min_price, "lt": max_price}}},
-                    {"exists": {"field": "brand"}},
+                    {"exists": {"field": required_field}},
                 ],
                 "filter": {"term": {"categories.keyword": filter_category}},
             }
