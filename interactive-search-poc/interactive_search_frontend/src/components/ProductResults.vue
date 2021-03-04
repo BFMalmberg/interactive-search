@@ -6,7 +6,7 @@
             :query_string="query_string"
             :brands="brands"
             :query_results="query_results"
-            @error_received="this.$emit('error_received', 'true')"
+            @error_received="pass_on_error"
         ></PromptBrand>
       </v-col>
     </v-row>
@@ -37,14 +37,18 @@ import Product from "@/components/Product";
 import PromptBrand from "@/components/PromptBrand";
 
 export default {
-  name: "MapResults",
+  name: "ProductResults",
   props: ['query_string', 'query_results', 'brands', 'error_flag'],
   components: {PromptBrand, Product},
   data: () => ({
     prompt_price: false,
     prompt_brand: false
   }),
-
+  methods: {
+    pass_on_error() {
+      this.$emit("error_received_2", true)
+    }
+  }
 
 }
 </script>
