@@ -1,4 +1,5 @@
 from elastic_connector import get_connection_from_env
+from prices import get_price_info
 
 es = get_connection_from_env()
 
@@ -23,12 +24,12 @@ def get_results(
             }
         }
     }
-    res = es.search(index="products", body=body)
+    res = es.search(index="products", body=body, size=100)
     print("Got %d Hits:" % res["hits"]["total"]["value"])
     for hit in res["hits"]["hits"]:
         print("%(title)s, %(price)s, %(brand)s: %(description)s" % hit["_source"])
+    return res
 
 
-# def get_price_info(results):
-
-get_results("red t-shirt")
+res = get_results("red t-shirt")
+pr = get_price_info(res)

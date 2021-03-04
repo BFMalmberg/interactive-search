@@ -1,0 +1,21 @@
+version: '3.7'
+
+services:
+
+  server:
+    build:
+      context: ./interactive_search_backend
+      dockerfile: Dockerfile
+    ports:
+      - 5050:5050
+    environment:
+      - FLASK_ENV=development
+
+  client:
+    build:
+      context: ./interactive_search_frontend
+      dockerfile: Dockerfile
+    ports:
+      - 8050:8080
+    depends_on:
+      - server
