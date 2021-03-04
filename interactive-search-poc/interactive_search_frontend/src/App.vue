@@ -54,7 +54,13 @@
     <v-main>
       <SearchBar ref="searchOperations" @cleared="onClearSearch" @clicked="onClickSearch"></SearchBar>
       <div v-if="showResults && !this.error_flag">
-        <ProductResults :query_results="this.query_results" :brands="brands" :error_flag="error_flag"></ProductResults>
+        <ProductResults
+            :query_string="query_string"
+            :query_results="this.query_results"
+            :brands="brands"
+            :error_flag="error_flag"
+            @error_received="error_flag = true">
+        </ProductResults>
       </div>
     </v-main>
   </v-app>

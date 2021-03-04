@@ -27,8 +27,8 @@ def get_results(
     }
     res = es_connection.search(index="products", body=body, size=100)
     print("Got %d Hits:" % res["hits"]["total"]["value"])
-    for hit in res["hits"]["hits"]:
-        print("%(title)s, %(price)s, %(brand)s: %(description)s" % hit["_source"])
+    # for hit in res["hits"]["hits"]:
+    #     print("%(title)s, %(price)s: %(description)s" % hit["_source"])
 
     if res["hits"]["total"]["value"] != 0:
         for result in res["hits"]["hits"]:

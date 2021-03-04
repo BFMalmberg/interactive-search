@@ -2,7 +2,12 @@
   <v-container v-if="!error_flag">
     <v-row class="text-center" v-show="true">
       <v-col cols="12">
-        <Prompt :buttons="brands"></Prompt>
+        <PromptBrand
+            :query_string="query_string"
+            :brands="brands"
+            :query_results="query_results"
+            @error_received="this.$emit('error_received', 'true')"
+        ></PromptBrand>
       </v-col>
     </v-row>
     <v-row class="text-center">
@@ -29,12 +34,12 @@
 
 <script>
 import Product from "@/components/Product";
-import Prompt from "@/components/Prompt";
+import PromptBrand from "@/components/PromptBrand";
 
 export default {
   name: "MapResults",
-  props: ['query_results', 'brands', 'error_flag'],
-  components: {Prompt, Product},
+  props: ['query_string', 'query_results', 'brands', 'error_flag'],
+  components: {PromptBrand, Product},
   data: () => ({
     prompt_price: false,
     prompt_brand: false

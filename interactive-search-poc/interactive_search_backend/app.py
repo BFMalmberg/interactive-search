@@ -25,12 +25,14 @@ def get_initial_query_results():
 
 
 @app.route('/query_brand', methods=["POST"])
-def get_query_results_for_brand(body):
+def get_query_results_for_brand():
     """
     :param body: dict containing "user_query" and "brand_name" fields.
     :return: new results based on query with user_query and brand_name filter.
     """
     # TODO: fill in - Diede.
+    user_query = request.form.get('user_query')
+    print(user_query)
 
     # For now return empty list.
     return jsonify(status="OK", products=[])
