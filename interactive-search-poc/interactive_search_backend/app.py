@@ -22,5 +22,17 @@ def get_initial_query_results():
                        message="No results found.")
 
 
+@app.route('/query_brand', methods=["POST"])
+def get_query_results_for_brand(body):
+    """
+    :param body: dict containing "user_query" and "brand_name" fields.
+    :return: new results based on query with user_query and brand_name filter.
+    """
+    # TODO: fill in - Diede.
+
+    # For now return empty list.
+    return jsonify(status="OK", products=[])
+
+
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5050)
