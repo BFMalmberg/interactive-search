@@ -1,5 +1,6 @@
 from elastic_connector import get_connection_from_env
 from prices import get_price_info
+
 es = get_connection_from_env()
 
 
@@ -29,7 +30,6 @@ def get_results(
         print("%(title)s, %(price)s, %(brand)s: %(description)s" % hit["_source"])
     return res
 
-res = get_results("red t-shirt")
 
+res = get_results("red t-shirt")
 pr = get_price_info(res)
-print("lala")
