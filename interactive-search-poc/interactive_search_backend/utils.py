@@ -5,6 +5,7 @@ def get_results(
         query,
         query_fields=("description", "title"),
         filter_category="Clothing",
+        filter_brand=None,
         min_price=0,
         max_price=500,
         required_field="price",
@@ -25,6 +26,10 @@ def get_results(
             }
         }
     }
+    # Add brand filter if it exist
+    if filter_brand:
+        body["query"]["bool"]["filter"]
+
     res = es_connection.search(index="products", body=body, size=100)
     print("Got %d Hits:" % res["hits"]["total"]["value"])
     for hit in res["hits"]["hits"]:
