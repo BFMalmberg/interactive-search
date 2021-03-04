@@ -14,5 +14,5 @@ def mean(lst):
 
 
 def get_price_info(results):
-    prices = [hit["_source"]["price"] for hit in results["hits"]["hits"]]
+    prices = [hit["_source"]["price"] for hit in results]
     return median(prices)

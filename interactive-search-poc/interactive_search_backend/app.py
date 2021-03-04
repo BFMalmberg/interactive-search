@@ -15,7 +15,7 @@ def get_initial_query_results():
     user_query = request.form.get('user_query')
     results = get_results(es_connection, user_query)
     brand_results = get_top_k_brands(results, top_k=5)
-    # median_price = get_price_info(results)
+    median_price = get_price_info(results)
     if results:
         return jsonify(status="OK", products=results, brands=brand_results)
     else:
