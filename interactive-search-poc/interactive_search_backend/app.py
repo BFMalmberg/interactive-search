@@ -4,6 +4,7 @@ from prices import get_price_info
 from elastic_connector import get_connection_from_env
 from utils import get_results
 from brands import get_top_k_brands
+from weather_api import get_weather_for_latlon
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
@@ -50,12 +51,15 @@ def get_query_results_for_brand():
     """
     user_query = request.form.get("user_query")
     brand = request.form.get("brand_name")
+    lat = request.form.get("lat")
+    lon = request.form.get("lon")
 
     results = get_results(es_connection, user_query, filter_brand=brand)
 
-    # TODO: also give temperature in result - Siem.
+    temperature = get_weather_for_latlon(lat,lon)
+
     if results:
-        return jsonify(status="OK", products=results)  #, temperature=None)
+        return jsonify(status="OK", products=results) , temperature=None)
     else:
         return jsonify(status="FAILED",
                        error=404,
@@ -67,7 +71,14 @@ def get_query_results_for_sweater():
     # TODO: fill in - Siem.
     # If user indeed wants to search for sweaters, give sweater results.
 
-    return jsonify(status="OK", products=[])
+    results = get_results(es_connection, user_query="jacket", filter_category="Jackets & Coats")
+
+    if results:
+        return jsonify(status="OK", products=results)
+    else:
+        return jsonify(status="FAILED",
+                       error=404,
+                       message="No results found.")
 
 
 if __name__ == '__main__':
