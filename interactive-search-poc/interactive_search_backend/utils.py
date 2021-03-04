@@ -6,7 +6,7 @@ def get_results(
         query_fields=("description", "title"),
         filter_category="Clothing",
         min_price=0,
-        max_price=500,
+        max_price=1000,
         required_field="price",
 ):
     """ Function to get query results from ElasticSearch.
