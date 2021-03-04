@@ -23,6 +23,7 @@ def get_initial_query_results():
                        error=404,
                        message="No results found.")
 
+
 @app.route('/price_clicked', methods=['POST'])
 def get_chosen_price_results():
     user_query = request.form.get('user_query')
@@ -50,7 +51,8 @@ def get_query_results_for_brand():
     """
     # TODO: fill in - Diede.
     user_query = request.form.get('user_query')
-    print(user_query)
+    brand_name = request.form.get('brand_name')
+    print(user_query, brand_name)
 
     # For now return empty list.
     return jsonify(status="OK", products=[])
