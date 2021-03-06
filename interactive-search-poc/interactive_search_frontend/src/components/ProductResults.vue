@@ -2,16 +2,8 @@
   <v-container v-if="!this.backend_error_flag">
     <v-row class="text-center">
       <v-col cols="12">
-        <PromptPrice v-show="prompt_price"
-                     :median_price="median_price"
-                     :query_string="query_string"
-        ></PromptPrice>
-
-        <PromptBrand v-show="prompt_brand"
-                     :brands="brands"
-                     :query_results="query_results"
-                     :query_string="query_string"
-        ></PromptBrand>
+        <PromptPrice v-show="prompt_price"></PromptPrice>
+        <PromptBrand v-show="prompt_brand"></PromptBrand>
       </v-col>
     </v-row>
     <v-row class="text-center">

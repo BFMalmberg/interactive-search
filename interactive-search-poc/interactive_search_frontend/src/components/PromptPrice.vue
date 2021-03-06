@@ -50,15 +50,16 @@ export default {
     async price_selected(value) {
       const form_data = {
         'user_query': this.query_string,
-        'price': this.median_price,
-        'button': value
+        'median_price': this.median_price,
+        'price_choice': value
       }
 
       if (this.query_string !== '') {
-        await this.$store.dispatch('filterResults', {form_data: form_data});
+        await this.$store.dispatch('filterResultsOnPrice', {form_data: form_data});
+        await this.$store.dispatch('setShowResultFlag', {flag: true});
       } else {
         this.$refs.searchOperations.$refs.searchForm.validate();
-        this.showResults = false;
+        await this.$store.dispatch('setShowResultFlag', {flag: false});
       }
     }
   },

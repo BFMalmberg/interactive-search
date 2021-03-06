@@ -32,40 +32,39 @@ import {mapState} from "vuex";
 export default {
   name: "Prompt",
   computed: {
-    ...mapState([]),
+    ...mapState([
+      'query_string',
+      'median_price',
+      'price_choice',
+    ]),
   },
   data() {
     return {
     }
   },
   methods: {
-    brand_selected(value) {
-      const formData = {
-        'user_query': this.$store.state.query_string,
-        'brand_name': value
+    async brand_selected(value) {
+
+      let location_data = await fetch('https://ipapi.co/json/')
+          .then(function (response) {
+            return response.json();
+          });
+
+      const form_data = {
+        'user_query': this.query_string,
+        'median_price': this.median_price,
+        'price_choice': this.price_choice,
+        'brand_choice': value,
+        'latitude': location_data.latitude,
+        'longitude': location_data.longitude,
       }
+
       if (this.query_string !== '') {
-        // make an API query
-        this.$http
-            .post('http://localhost:5050/query_brand', formData, {emulateJSON: true})
-            .then((response) => {
-              if (response.data.status === 'OK') {
-                console.log(response.data);
-                this.query_results = response.data.products;
-                this.$emit('error_received', false)
-                this.showResults = true;
-              } else {
-                this.$emit('error_received', true)
-                this.showResults = false;
-              }
-            })
-            .catch(function (error) {
-              console.log(error);
-              this.$emit('error_received', true)
-            });
+        await this.$store.dispatch('filterResultsOnPriceAndBrand', {form_data: form_data});
+        await this.$store.dispatch('setShowResultFlag', {flag: true});
       } else {
         this.$refs.searchOperations.$refs.searchForm.validate();
-        this.showResults = false;
+        await this.$store.dispatch('setShowResultFlag', {flag: false});
       }
     }
   },

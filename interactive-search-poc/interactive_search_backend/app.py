@@ -11,25 +11,24 @@ CORS(app, resources={r"/*": {"origins": "*"}})
 es_connection = get_connection_from_env()
 
 
-@app.route('/query_results', methods=['POST'])
+@app.route('/initial_query_results', methods=['POST'])
 def get_initial_query_results():
     user_query = request.form.get('user_query')
     results = get_results(es_connection, user_query)
-    brand_results = get_top_k_brands(results, top_k=5)
     median_price = get_price_info(results)
     if results:
-        return jsonify(status="OK", products=results, brands=brand_results, median_price=median_price)
+        return jsonify(status="OK", products=results, median_price=median_price)
     else:
         return jsonify(status="FAILED",
                        error=404,
                        message="No results found.")
 
 
-@app.route('/price_clicked', methods=['POST'])
+@app.route('/price_filtered_results', methods=['POST'])
 def get_chosen_price_results():
     user_query = request.form.get('user_query')
-    price = request.form.get('price')
-    higher_lower = request.form.get('button')
+    price = request.form.get('median_price')
+    higher_lower = request.form.get('price_choice')
     if higher_lower == 'higher':
         results = get_results(es_connection, user_query, min_price=price)
     else:
@@ -44,19 +43,25 @@ def get_chosen_price_results():
                        message="No results found.")
 
 
-@app.route('/query_brand', methods=["POST"])
+@app.route('/brand_filtered_results', methods=["POST"])
 def get_query_results_for_brand():
     """
-    :return: new results based on query with user_query and brand_name filter.
+    :return: new results based on query with user_query and brand_name filter
+    as well as price choice from previous prompt.
     """
-    user_query = request.form.get("user_query")
-    brand = request.form.get("brand_name")
-    lat = request.form.get("lat")
-    lon = request.form.get("lon")
+    user_query = request.form.get('user_query')
+    brand = request.form.get('brand_choice')
+    price = request.form.get('median_price')
+    higher_lower = request.form.get('price_choice')
+    if higher_lower == 'higher':
+        results = get_results(es_connection, user_query, min_price=price, filter_brand=brand)
+    else:
+        results = get_results(es_connection, user_query, max_price=price, filter_brand=brand)
 
-    results = get_results(es_connection, user_query, filter_brand=brand)
+    lat = request.form.get('latitude')
+    lon = request.form.get('longitude')
 
-    temperature = get_weather_for_latlon(lat,lon)
+    temperature = get_weather_for_latlon(lat, lon)
 
     if results:
         return jsonify(status="OK", products=results, temperature=temperature)

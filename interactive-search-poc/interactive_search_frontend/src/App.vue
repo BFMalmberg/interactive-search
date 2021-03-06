@@ -54,8 +54,7 @@
     <v-main>
       <SearchBar ref="searchOperations" @cleared="onClearSearch" @clicked="onClickSearch"></SearchBar>
       <div v-if="this.show_results_flag && !this.backend_error_flag">
-        <ProductResults>
-        </ProductResults>
+        <ProductResults></ProductResults>
       </div>
     </v-main>
   </v-app>
