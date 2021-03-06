@@ -26,11 +26,12 @@ def get_results(
             }
         }
     }
-    # Add brand filter if it exist
+    # Add brand filter if it exists
+    # TODO: allow for multiple brands
     if filter_brand:
         body["query"]["bool"]["filter"].append({"term": {"brand.keyword": filter_brand}})
 
-    res = es_connection.search(index="products", body=body, size=100)
+    res = es_connection.search(index="products_diede", body=body, size=100)
     print("Got %d Hits:" % res["hits"]["total"]["value"])
     # for hit in res["hits"]["hits"]:
     #     print("%(title)s, %(price)s: %(description)s" % hit["_source"])

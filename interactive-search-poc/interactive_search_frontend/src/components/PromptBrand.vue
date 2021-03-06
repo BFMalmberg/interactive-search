@@ -9,14 +9,23 @@
     >
       <v-row align="center">
         <v-col class="grow">
-          Which brand would you like to browse further?
+          In this price range, the following brands stand out. Which brand has your preference?
         </v-col>
       </v-row>
-      <v-row align="center" class="justify-space-between">
+      <v-row align="center" class="justify-space-around">
+<!--        <v-col cols="12">-->
+<!--          <v-btn-toggle v-model="chosen_brand">-->
+<!--            <v-btn v-for="brand in this.brands"-->
+<!--                    :key="brand"-->
+<!--                    @click="brand_selected(brand)">-->
+<!--              {{ brand }}-->
+<!--            </v-btn>-->
+<!--          </v-btn-toggle>-->
+<!--        </v-col>-->
         <v-col v-for="brand in this.brands"
                :key="brand"
                :cols="2">
-          <v-btn color="secondary"
+          <v-btn block outlined color="secondary"
                  @click="brand_selected(brand)"
           >{{ brand }}
           </v-btn>
@@ -27,41 +36,45 @@
 </template>
 
 <script>
+import {mapState} from "vuex";
+
 export default {
   name: "Prompt",
-  props: ['query_string', 'brands', 'query_results'],
+  computed: {
+    ...mapState([
+      'query_string',
+      'median_price',
+      'price_choice',
+      'brands',
+    ]),
+  },
   data() {
     return {
+      chosen_brand: '',
     }
   },
   methods: {
-    brand_selected(value) {
-      const formData = {
+    async brand_selected(value) {
+      let location_data = await fetch('https://ipapi.co/json/')
+          .then(function (response) {
+            return response.json();
+          });
+
+      const form_data = {
         'user_query': this.query_string,
-        'brand_name': value
+        'median_price': this.median_price,
+        'price_choice': this.price_choice,
+        'brand_choice': value,
+        'latitude': location_data.latitude,
+        'longitude': location_data.longitude,
       }
+
       if (this.query_string !== '') {
-        // make an API query
-        this.$http
-            .post('http://localhost:5050/query_brand', formData, {emulateJSON: true})
-            .then((response) => {
-              if (response.data.status === 'OK') {
-                console.log(response.data);
-                this.query_results = response.data.products;
-                this.$emit('error_received', false)
-                this.showResults = true;
-              } else {
-                this.$emit('error_received', true)
-                this.showResults = false;
-              }
-            })
-            .catch(function (error) {
-              console.log(error);
-              this.$emit('error_received', true)
-            });
+        await this.$store.dispatch('filterResultsOnPriceAndBrand', {form_data: form_data});
+        await this.$store.dispatch('setShowResultFlag', {flag: true});
       } else {
         this.$refs.searchOperations.$refs.searchForm.validate();
-        this.showResults = false;
+        await this.$store.dispatch('setShowResultFlag', {flag: false});
       }
     }
   },

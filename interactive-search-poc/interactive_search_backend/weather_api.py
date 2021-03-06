@@ -1,17 +1,17 @@
 """
 Code for the weather integration with OpenWeatherMap
-Input: lattitude, longitude, units (optional, default is metric) 
+Input: latitude, longitude, units (optional, default is metric)
 Output: temperature for given coordinates
 
 """
-
-
 import requests
 import os
 from dotenv import load_dotenv
+
 load_dotenv()
 
 _weather_api = os.getenv("OPENWEATHER_API")
+
 
 def get_weather_for_latlon(lat, lon, units="metric"):
     """
@@ -23,11 +23,11 @@ def get_weather_for_latlon(lat, lon, units="metric"):
     # units = "metric"
     exclude = "minutely,hourly,daily"
 
-    response = requests.get(f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude={exclude}&units={units}&appid={_weather_api}')
+    response = requests.get(
+        f'https://api.openweathermap.org/data/2.5/onecall?lat={lat}&lon={lon}&exclude={exclude}&units={units}&appid={_weather_api}')
 
     weather_data = response.json()
 
     return weather_data['current']['temp']
 
-
-print(get_weather_for_latlon("52.097147","5.065070"))
+# print(get_weather_for_latlon("52.097147","5.065070"))

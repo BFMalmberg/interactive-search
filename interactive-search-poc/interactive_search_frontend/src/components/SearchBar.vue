@@ -1,16 +1,16 @@
 <template>
   <v-container>
     <v-row class="text-center">
-      <v-col cols="12">
-        <v-img
-            :src="require('../assets/viqtordavis.png')"
-            class="my-3"
-            contain
-            height="80"
-        />
-      </v-col>
+<!--      <v-col cols="12">-->
+<!--        <v-img-->
+<!--            :src="require('../assets/viqtordavis.png')"-->
+<!--            class="my-1"-->
+<!--            contain-->
+<!--            height="50"-->
+<!--        />-->
+<!--      </v-col>-->
 
-      <v-col class="mb-2">
+      <v-col class="my-5">
         <h3 class="display-1 font-weight-bold mb-3">
           Welcome to Interactive Product Search Tool
         </h3>
@@ -42,19 +42,18 @@
 </template>
 
 <script>
+
 export default {
   name: 'SearchBar',
   data: () => ({
     valid: false,
-    showMap: false,
     user_query: '',
     queryRules: [
       v => !!v || 'Query is required',
     ],
   }),
   methods: {
-    onSubmit: function () {
-      this.showMap = true;
+    async onSubmit() {
       this.$emit('clicked', this.user_query);
     },
     onClear: function () {
