@@ -13,10 +13,19 @@
         </v-col>
       </v-row>
       <v-row align="center" class="justify-space-around">
+<!--        <v-col cols="12">-->
+<!--          <v-btn-toggle v-model="chosen_brand">-->
+<!--            <v-btn v-for="brand in this.brands"-->
+<!--                    :key="brand"-->
+<!--                    @click="brand_selected(brand)">-->
+<!--              {{ brand }}-->
+<!--            </v-btn>-->
+<!--          </v-btn-toggle>-->
+<!--        </v-col>-->
         <v-col v-for="brand in this.brands"
                :key="brand"
                :cols="2">
-          <v-btn color="secondary"
+          <v-btn block outlined color="secondary"
                  @click="brand_selected(brand)"
           >{{ brand }}
           </v-btn>
@@ -36,15 +45,16 @@ export default {
       'query_string',
       'median_price',
       'price_choice',
+      'brands',
     ]),
   },
   data() {
     return {
+      chosen_brand: '',
     }
   },
   methods: {
     async brand_selected(value) {
-
       let location_data = await fetch('https://ipapi.co/json/')
           .then(function (response) {
             return response.json();

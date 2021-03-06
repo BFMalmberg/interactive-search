@@ -15,8 +15,8 @@ es_connection = get_connection_from_env()
 def get_initial_query_results():
     user_query = request.form.get('user_query')
     results = get_results(es_connection, user_query)
-    median_price = get_price_info(results)
     if results:
+        median_price = get_price_info(results)
         return jsonify(status="OK", products=results, median_price=median_price)
     else:
         return jsonify(status="FAILED",
@@ -34,8 +34,8 @@ def get_chosen_price_results():
     else:
         results = get_results(es_connection, user_query, max_price=price)
 
-    brand_results = get_top_k_brands(results, top_k=5)
     if results:
+        brand_results = get_top_k_brands(results, top_k=5)
         return jsonify(status="OK", products=results, brands=brand_results)
     else:
         return jsonify(status="FAILED",
@@ -61,9 +61,8 @@ def get_query_results_for_brand():
     lat = request.form.get('latitude')
     lon = request.form.get('longitude')
 
-    temperature = get_weather_for_latlon(lat, lon)
-
     if results:
+        temperature = get_weather_for_latlon(lat, lon)
         return jsonify(status="OK", products=results, temperature=temperature)
     else:
         return jsonify(status="FAILED",

@@ -8,7 +8,7 @@ export default new Vuex.Store({
         query_string: '',
         query_results: [],
         brands: [],
-        median_price: 0,
+        median_price: '',
         price_choice: '',
         brand_choice: '',
         temperature: '',
@@ -88,6 +88,28 @@ export default new Vuex.Store({
 
             commit('UPDATE_RESULTS_LOADING_FLAG', false);
         },
+        async recommendProduct ({commit}) {
+            commit('UPDATE_RESULTS_LOADING_FLAG', true);
+            // make an API query
+            await Vue.http
+                .post('http://localhost:5050/query_sweater')
+                .then((response) => {
+                    if (response.data.status === 'OK') {
+                        console.log(response.data);
+                        commit('SET_QUERY_RESULTS', response.data.products);
+                        commit('UPDATE_BACKEND_ERROR_FLAG', false);
+                    } else {
+                        commit('UPDATE_BACKEND_ERROR_FLAG', true);
+                        commit('UPDATE_SHOW_RESULTS_FLAG', false);
+                    }
+                })
+                .catch(error => {
+                    console.error(error);
+                    commit('UPDATE_BACKEND_ERROR_FLAG', true);
+                });
+
+            commit('UPDATE_RESULTS_LOADING_FLAG', false);
+        },
         setQueryString ({commit}, {query_string}) {
             commit('SET_QUERY_STRING', query_string);
         },
@@ -97,7 +119,18 @@ export default new Vuex.Store({
         setShowResultFlag ({commit}, {flag}) {
             commit('UPDATE_SHOW_RESULTS_FLAG', flag);
         },
-
+        resetSearchSession ({commit}) {
+            commit('SET_QUERY_STRING', '');
+            commit('SET_QUERY_RESULTS', []);
+            commit('SET_BRANDS', []);
+            commit('SET_MEDIAN_PRICE', '');
+            commit('SET_PRICE_CHOICE', '');
+            commit('SET_BRAND_CHOICE', '');
+            commit('SET_TEMPERATURE', '');
+            commit('UPDATE_SHOW_RESULTS_FLAG', false);
+            commit('UPDATE_BACKEND_ERROR_FLAG', false);
+            commit('UPDATE_RESULTS_LOADING_FLAG', false);
+        }
     },
     mutations: {
         SET_QUERY_STRING (state, query_string) {
@@ -114,6 +147,9 @@ export default new Vuex.Store({
         },
         SET_PRICE_CHOICE (state, price_choice) {
             state.price_choice = price_choice;
+        },
+        SET_BRAND_CHOICE (state, brand_choice) {
+            state.brand_choice = brand_choice;
         },
         SET_TEMPERATURE (state, temperature) {
             state.temperature = temperature;

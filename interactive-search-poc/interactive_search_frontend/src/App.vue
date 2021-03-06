@@ -53,6 +53,12 @@
 
     <v-main>
       <SearchBar ref="searchOperations" @cleared="onClearSearch" @clicked="onClickSearch"></SearchBar>
+      <v-overlay absolute v-if="this.results_loading_flag">
+        <v-progress-circular
+            indeterminate
+            size="64"
+        ></v-progress-circular>
+      </v-overlay>
       <div v-if="this.show_results_flag && !this.backend_error_flag">
         <ProductResults></ProductResults>
       </div>
@@ -99,9 +105,7 @@ export default {
     },
     async onClearSearch() {
       this.$refs.searchOperations.$refs.searchForm.resetValidation();
-      await this.$store.dispatch('setShowResultFlag', {flag: false});
-      await this.$store.dispatch('setBackendErrorFlag', {flag: false})
-      await this.$store.dispatch('setQueryString', {query_string: ''});
+      await this.$store.dispatch('resetSearchSession');
     },
     reloadPage() {
       window.location.reload();

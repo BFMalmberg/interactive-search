@@ -22,7 +22,7 @@ def get_top_k_brands(articles: List[dict], top_k: int = 3):
     """
     logger.info(f"Deciding top {top_k} brands for {len(articles)} articles.")
     brand_counts = _count_all_brands(articles)
-    sorted_brands = [(k, v) for k, v in sorted(brand_counts.items(), key=lambda x: x[1])]
+    sorted_brands = [(k, v) for k, v in sorted(brand_counts.items(), key=lambda x: x[1], reverse=True)]
     return [k for (k, v) in sorted_brands[:top_k] if k != "None"]
 
 

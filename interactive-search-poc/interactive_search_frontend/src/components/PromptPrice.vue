@@ -16,13 +16,13 @@
       </v-row>
       <v-row align="center" class="justify-space-around">
         <v-col :cols="6">
-          <v-btn color="secondary"
+          <v-btn block outlined color="secondary"
                  @click="price_selected('lower')"
           > Below €{{ Math.ceil(median_price) }}
           </v-btn>
         </v-col>
         <v-col :cols="6">
-          <v-btn color="secondary"
+          <v-btn block outlined color="secondary"
                  @click="price_selected('higher')"
           > Above €{{ Math.ceil(median_price) }}
           </v-btn>
@@ -36,7 +36,7 @@
 import {mapState} from "vuex";
 
 export default {
-  name: "Prompt",
+  name: "PromptPrice",
   computed: {
     ...mapState([
       'query_string',
