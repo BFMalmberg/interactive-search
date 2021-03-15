@@ -34,10 +34,11 @@ def ingest_to_index():
     """
     es = get_connection_from_env()
 
-    with open("../../../meta_Clothing_Shoes_and_Jewelry.json") as myfile:
-        head = [eval(next(myfile)) for x in range(100)]
-        parsed = [dict(_preprocess_product(pr), **{"_index": INDEX}) for pr in head if pr.get("description")]
-        print(bulk(es, parsed))
+    with open("../../meta_Clothing_Shoes_and_Jewelry.json") as myfile:
+        while next(myfile):
+            head = [eval(next(myfile)) for x in range(50000)]
+            parsed = [dict(_preprocess_product(pr), **{"_index": INDEX}) for pr in head if pr.get("description")]
+            print(bulk(es, parsed))
 
 
 if __name__ == '__main__':
